@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Mart Dünya Kadınlar Günü</title>
+    <style>
+        body {
+            background-color: black; /* Arka plan rengi siyah */
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="flowerCanvas"></canvas>
+
+    <script>
+        // Canvas ve çizim ayarları
+        const canvas = document.getElementById("flowerCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Mobil için canvas boyutunu ayarla
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Çiçek çizme fonksiyonu (düzeltilmiş ve daha düzgün)
+        function drawFlower(x, y, color) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+
+            // Çiçek yaprakları (düzgün çizim)
+            let angle = 0;
+            const drawStep = () => {
+                if (angle >= 360) {
+                    ctx.restore();
+                    return;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(50, 0);
+                ctx.translate(50, 0);
+                ctx.rotate((45 * Math.PI) / 180);
+                ctx.lineTo(50, 0);
+                ctx.translate(50, 0);
+                ctx.rotate((135 * Math.PI) / 180);
+                ctx.lineTo(50, 0);
+                ctx.translate(50, 0);
+                ctx.rotate((45 * Math.PI) / 180);
+                ctx.lineTo(50, 0);
+                ctx.translate(50, 0);
+                ctx.rotate((170 * Math.PI) / 180);
+                ctx.stroke();
+
+                angle += 10; // Her adımda 10 derece artır
+                requestAnimationFrame(drawStep); // Animasyonu devam ettir
+            };
+
+            drawStep();
+        }
+
+        // Çiçek sapı çizme fonksiyonu
+        function drawStem(x, y) {
+            ctx.strokeStyle = "green";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y + 150);
+            ctx.stroke();
+        }
+
+        // Buket çizme fonksiyonu (9 çiçek)
+        function drawBouquet() {
+            const colors = ["red", "orange", "yellow", "pink", "magenta", "purple", "blue", "white", "cyan"];
+            const positions = [
+                [-200, 0], [-100, 50], [0, 0], [100, 50], [200, 0],
+                [-150, -100], [-50, -50], [50, -100], [150, -50]
+            ];
+
+            positions.forEach((pos, index) => {
+                const x = pos[0] + canvas.width / 2;
+                const y = pos[1] + canvas.height / 2;
+                drawStem(x, y + 100); // Sapı çiz
+                setTimeout(() => drawFlower(x, y, colors[index]), index * 1000); // Her çiçeği sırayla çiz
+            });
+        }
+
+        // Mesaj yazma fonksiyonu (italik ve gradient)
+        function writeMessage() {
+            const gradient = ctx.createLinearGradient(canvas.width / 2 - 200, 50, canvas.width / 2 + 200, 50);
+            gradient.addColorStop(0, "pink");
+            gradient.addColorStop(1, "magenta");
+
+            ctx.font = "italic bold 24px Arial";
+            ctx.fillStyle = gradient;
+            ctx.textAlign = "center";
+            ctx.fillText("Bu çiçekler çok güzel ama en güzeli ve en değerlisi sensin Juliet'immm", canvas.width / 2, 50);
+        }
+
+        // Ana fonksiyon
+        function main() {
+            drawBouquet();
+            writeMessage();
+        }
+
+        // Programı çalıştır
+        main();
+    </script>
+</body>
+</html>
